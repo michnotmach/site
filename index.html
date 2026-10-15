@@ -37,12 +37,12 @@
 <header>
   <nav class="superHeader">
     <div class="left">
-      <a href="index.html">mich</a> |
-      <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">code</a> |
+      <a href="./">mich</a> |
+      <a href="https://github.com/michnotmach/mich-core" target="_blank" rel="noopener">code</a> |
       <a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">userkit</a> |
-      <a href="docs/index.html#syscalls">syscalls</a> |
-      <a href="releases/index.html">releases</a> |
-      <a href="https://github.com/ukdaemonz/mich-core/issues" target="_blank" rel="noopener">bugs</a>
+      <a href="docs/#syscalls">syscalls</a> |
+      <a href="releases/">releases</a> |
+      <a href="https://github.com/michnotmach/mich-core/issues" target="_blank" rel="noopener">bugs</a>
     </div>
     <div class="right">
       <button type="button" class="mode-btn" id="invert-bg-btn">[invert]</button>
@@ -51,7 +51,7 @@
 
   <div class="midHeader">
     <h1 class="headerTitle">
-      <a class="brand-link" href="index.html"><img class="brand-m-img" src="_imgs/logo-mark.png" alt="mich"></a>
+      <a class="brand-link" href="./"><img class="brand-m-img" src="imgs/logo-mark.png" alt="mich"></a>
       <span id="headerSubTitle">not mach</span>
     </h1>
   </div>
@@ -61,21 +61,21 @@
   <div class="sideBarGroup">
     <p class="sideBarTitle">pages:</p>
     <ul>
-      <li><a href="index.html" class="thisPage">&rsaquo; mich</a></li>
-      <li><a href="architecture/index.html">&rsaquo; architecture/</a></li>
-      <li><a href="docs/index.html">&rsaquo; docs/</a></li>
-      <li><a href="releases/index.html">&rsaquo; releases/</a></li>
-      <li><a href="gallery/index.html">&rsaquo; gallery/</a></li>
+      <li><a href="./" class="thisPage">&rsaquo; mich</a></li>
+      <li><a href="architecture/">&rsaquo; architecture/</a></li>
+      <li><a href="docs/">&rsaquo; docs/</a></li>
+      <li><a href="releases/">&rsaquo; releases/</a></li>
+      <li><a href="gallery/">&rsaquo; gallery/</a></li>
     </ul>
   </div>
 
   <div class="sideBarGroup">
     <p class="sideBarTitle">source:</p>
     <ul>
-      <li><a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">- mich-core</a></li>
+      <li><a href="https://github.com/michnotmach/mich-core" target="_blank" rel="noopener">- mich-core</a></li>
       <li><a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">- mich-userkit</a></li>
-      <li><a href="https://github.com/ukdaemonz/mich-core/blob/main/docs/syscalls.md" target="_blank" rel="noopener">- syscalls.md</a></li>
-      <li><a href="https://github.com/ukdaemonz/mich-core/releases/tag/v0.2.0" target="_blank" rel="noopener">- v0.2.0</a></li>
+      <li><a href="https://github.com/michnotmach/mich-core/blob/main/docs/syscalls.md" target="_blank" rel="noopener">- syscalls.md</a></li>
+      <li><a href="https://github.com/michnotmach/mich-core/releases/tag/v0.2.0" target="_blank" rel="noopener">- v0.2.0</a></li>
     </ul>
   </div>
 
@@ -83,6 +83,7 @@
     arch: x86-64 (UEFI)<br>
     planned: aarch64, riscv64<br>
     license: BSD 2-Clause<br>
+    author: ukdaemonz<br>
     latest: v0.2.0
   </div>
 </nav>
@@ -90,10 +91,10 @@
 <article>
 
 <div class="release-showcase">
-  <div class="release-label">LATEST RELEASE: <a href="releases/index.html#v0.2.0">MICH 0.2.0</a></div>
+  <div class="release-label">LATEST RELEASE: <a href="releases/#v0.2.0">MICH 0.2.0</a></div>
   <div class="poster-frame">
-    <a href="releases/index.html#v0.2.0">
-      <img src="_imgs/mich-0.2.0.jpg" alt="Mich Core 0.2.0">
+    <a href="releases/#v0.2.0">
+      <img src="imgs/mich-0.2.0.jpg" alt="Mich Core 0.2.0">
     </a>
   </div>
   <div class="release-caption">
@@ -102,7 +103,7 @@
 </div>
 
 <p>
-  <em>Mich Core</em> is an experimental modular hybrid kernel for x86-64, written from scratch in C and assembly under the <a href="https://github.com/ukdaemonz/mich-core/blob/main/LICENSE" target="_blank" rel="noopener">BSD 2-Clause License</a>. It is unfinished. The disk images are test targets, not an installable distribution. Boot it at your own risk.
+  <em>Mich Core</em> is an experimental modular hybrid kernel for x86-64, written from scratch in C and assembly under the <a href="https://github.com/michnotmach/mich-core/blob/main/LICENSE" target="_blank" rel="noopener">BSD 2-Clause License</a>. It is unfinished. The disk images are test targets, not an installable distribution. Boot it at your own risk.
 </p>
 
 <h3>what works right now</h3>
@@ -110,7 +111,7 @@
   <li>typed kernel objects and 24-bit generation-counted handles</li>
   <li>Ring 3 userspace driver domains with crash recovery and PCI quarantine</li>
   <li>Intel VT-d and AMD-Vi IOMMU DMA translation</li>
-  <li>bounded in-kernel VFS (<code>ramfs</code>, <code>bootfs</code>, and persistent <a href="architecture/index.html#vfs">adytumfs v3</a>)</li>
+  <li>bounded in-kernel VFS (<code>ramfs</code>, <code>bootfs</code>, and persistent <a href="architecture/#vfs">adytumfs v3</a>)</li>
   <li>static x86-64 POSIX source profile with <code>pledge</code>, <code>unveil</code>, and job control</li>
   <li>in-house network stack (userspace <code>virtio-net</code> capsule, DHCPv4, IPv4/IPv6, SLAAC, UDP/UDPv6, TCP stream sockets)</li>
   <li>SMP bring-up, per-CPU state, reschedule and TLB shootdown IPIs</li>
@@ -129,7 +130,7 @@
 
 <h3>source &amp; contact</h3>
 <p>
-  The kernel tree lives at <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">github.com/ukdaemonz/mich-core</a>.
+  The kernel tree lives at <a href="https://github.com/michnotmach/mich-core" target="_blank" rel="noopener">github.com/michnotmach/mich-core</a>.
   Userspace init, static libc, POSIX headers, and driver capsules live in <a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">mich-userkit</a>.
 </p>
 <p>
@@ -145,7 +146,7 @@
 
 <footer>
   <div class="left">
-    <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">ukdaemonz/mich-core</a> &middot; BSD 2-Clause
+    <a href="https://github.com/michnotmach/mich-core" target="_blank" rel="noopener">michnotmach/mich-core</a> &middot; &copy; ukdaemonz (BSD 2-Clause)
   </div>
   <div class="right">
     Powered by <a href="http://werc.cat-v.org/" target="_blank" rel="noopener">werc</a>
