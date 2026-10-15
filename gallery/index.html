@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mich / gallery</title>
+  <link rel="shortcut icon" href="../favicon.png" type="image/png">
+  <link rel="stylesheet" href="../style.css" type="text/css" media="screen, handheld">
+</head>
+<body>
+<div id="tos-cursor" aria-hidden="true">
+  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <g fill="#ffffff">
+      <rect x="0" y="0" width="1" height="1"/>
+      <rect x="0" y="1" width="2" height="1"/>
+      <rect x="0" y="2" width="3" height="1"/>
+      <rect x="0" y="3" width="4" height="1"/>
+      <rect x="0" y="4" width="5" height="1"/>
+      <rect x="0" y="5" width="6" height="1"/>
+      <rect x="0" y="6" width="7" height="1"/>
+      <rect x="0" y="7" width="8" height="1"/>
+      <rect x="0" y="8" width="9" height="1"/>
+      <rect x="0" y="9" width="10" height="1"/>
+      <rect x="0" y="10" width="6" height="1"/>
+      <rect x="0" y="11" width="3" height="1"/>
+      <rect x="4" y="11" width="2" height="1"/>
+      <rect x="0" y="12" width="2" height="1"/>
+      <rect x="5" y="12" width="2" height="1"/>
+      <rect x="0" y="13" width="1" height="1"/>
+      <rect x="5" y="13" width="2" height="1"/>
+      <rect x="6" y="14" width="2" height="1"/>
+      <rect x="6" y="15" width="2" height="1"/>
+    </g>
+  </svg>
+</div>
+
+<header>
+  <nav class="superHeader">
+    <div class="left">
+      <a href="../index.html">mich</a> |
+      <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">code</a> |
+      <a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">userkit</a> |
+      <a href="../docs/index.html#syscalls">syscalls</a> |
+      <a href="../releases/index.html">releases</a> |
+      <a href="https://github.com/ukdaemonz/mich-core/issues" target="_blank" rel="noopener">bugs</a>
+    </div>
+    <div class="right">
+      <button type="button" class="mode-btn" id="invert-bg-btn">[invert]</button>
+    </div>
+  </nav>
+
+  <div class="midHeader">
+    <h1 class="headerTitle">
+      <a class="brand-link" href="../index.html"><img class="brand-m-img" src="../_imgs/logo-mark.png" alt="mich"></a>
+      <span id="headerSubTitle">not mach</span>
+    </h1>
+  </div>
+</header>
+
+<nav id="side-bar">
+  <div class="sideBarGroup">
+    <p class="sideBarTitle">pages:</p>
+    <ul>
+      <li><a href="../index.html">&rsaquo; mich</a></li>
+      <li><a href="../architecture/index.html">&rsaquo; architecture/</a></li>
+      <li><a href="../docs/index.html">&rsaquo; docs/</a></li>
+      <li><a href="../releases/index.html">&rsaquo; releases/</a></li>
+      <li><a href="../gallery/index.html" class="thisPage">&rsaquo; gallery/</a></li>
+    </ul>
+  </div>
+
+  <div class="sideBarGroup">
+    <p class="sideBarTitle">source:</p>
+    <ul>
+      <li><a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">- mich-core</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">- mich-userkit</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-core/blob/main/docs/syscalls.md" target="_blank" rel="noopener">- syscalls.md</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-core/releases/tag/v0.2.0" target="_blank" rel="noopener">- v0.2.0</a></li>
+    </ul>
+  </div>
+
+  <div class="sideBarMeta">
+    arch: x86-64 (UEFI)<br>
+    planned: aarch64, riscv64<br>
+    license: BSD 2-Clause<br>
+    latest: v0.2.0
+  </div>
+</nav>
+
+<article>
+
+<h1>gallery</h1>
+
+<p>
+  Release woodcuts, blackboard derivations, and emblem plates. Click an image for full size.
+</p>
+
+<div class="gallery-list">
+  <div class="gallery-item">
+    <a class="img-link" href="../_imgs/mich-not-mach-ladders.jpg" data-lightbox="../_imgs/mich-not-mach-ladders.jpg" data-caption="mich, not mach">
+      <img src="../_imgs/mich-not-mach-ladders.jpg" alt="mich, not mach blackboard">
+    </a>
+    <div class="gallery-meta">
+      <strong>mich, not mach (blackboard)</strong>
+      <span>Checking ring bounds and handle generation math by hand.</span>
+    </div>
+  </div>
+
+  <div class="gallery-item">
+    <a class="img-link" href="../_imgs/mich-not-mach-lecture.jpg" data-lightbox="../_imgs/mich-not-mach-lecture.jpg" data-caption="mich, not mach lecture">
+      <img src="../_imgs/mich-not-mach-lecture.jpg" alt="mich, not mach lecture hall">
+    </a>
+    <div class="gallery-meta">
+      <strong>mich, not mach (lecture)</strong>
+      <span>Required reading on the board.</span>
+    </div>
+  </div>
+
+  <div class="gallery-item">
+    <a class="img-link" href="../_imgs/mich-0.2.0.jpg" data-lightbox="../_imgs/mich-0.2.0.jpg" data-caption="mich 0.2.0 - JOVIS">
+      <img src="../_imgs/mich-0.2.0.jpg" alt="Mich 0.2.0 release woodcut">
+    </a>
+    <div class="gallery-meta">
+      <strong>mich 0.2.0 - JOVIS</strong>
+      <span>Release 0.2.0 woodcut.</span>
+    </div>
+  </div>
+
+  <div class="gallery-item">
+    <a class="img-link" href="../_imgs/logo.png" data-lightbox="../_imgs/logo.png" data-caption="mich emblem">
+      <img src="../_imgs/logo.png" alt="Mich Core emblem">
+    </a>
+    <div class="gallery-meta">
+      <strong>mich emblem</strong>
+      <span>Monochrome scanline mark.</span>
+    </div>
+  </div>
+</div>
+
+</article>
+
+<div id="lightbox">
+  <img id="lightbox-img" src="" alt="preview">
+  <div id="lightbox-caption"></div>
+</div>
+
+<footer>
+  <div class="left">
+    <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">ukdaemonz/mich-core</a> &middot; BSD 2-Clause
+  </div>
+  <div class="right">
+    Powered by <a href="http://werc.cat-v.org/" target="_blank" rel="noopener">werc</a>
+  </div>
+</footer>
+
+<script src="../cursor.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mich / docs</title>
+  <link rel="shortcut icon" href="../favicon.png" type="image/png">
+  <link rel="stylesheet" href="../style.css" type="text/css" media="screen, handheld">
+</head>
+<body>
+<div id="tos-cursor" aria-hidden="true">
+  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <g fill="#ffffff">
+      <rect x="0" y="0" width="1" height="1"/>
+      <rect x="0" y="1" width="2" height="1"/>
+      <rect x="0" y="2" width="3" height="1"/>
+      <rect x="0" y="3" width="4" height="1"/>
+      <rect x="0" y="4" width="5" height="1"/>
+      <rect x="0" y="5" width="6" height="1"/>
+      <rect x="0" y="6" width="7" height="1"/>
+      <rect x="0" y="7" width="8" height="1"/>
+      <rect x="0" y="8" width="9" height="1"/>
+      <rect x="0" y="9" width="10" height="1"/>
+      <rect x="0" y="10" width="6" height="1"/>
+      <rect x="0" y="11" width="3" height="1"/>
+      <rect x="4" y="11" width="2" height="1"/>
+      <rect x="0" y="12" width="2" height="1"/>
+      <rect x="5" y="12" width="2" height="1"/>
+      <rect x="0" y="13" width="1" height="1"/>
+      <rect x="5" y="13" width="2" height="1"/>
+      <rect x="6" y="14" width="2" height="1"/>
+      <rect x="6" y="15" width="2" height="1"/>
+    </g>
+  </svg>
+</div>
+
+<header>
+  <nav class="superHeader">
+    <div class="left">
+      <a href="../index.html">mich</a> |
+      <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">code</a> |
+      <a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">userkit</a> |
+      <a href="../docs/index.html#syscalls">syscalls</a> |
+      <a href="../releases/index.html">releases</a> |
+      <a href="https://github.com/ukdaemonz/mich-core/issues" target="_blank" rel="noopener">bugs</a>
+    </div>
+    <div class="right">
+      <button type="button" class="mode-btn" id="invert-bg-btn">[invert]</button>
+    </div>
+  </nav>
+
+  <div class="midHeader">
+    <h1 class="headerTitle">
+      <a class="brand-link" href="../index.html"><img class="brand-m-img" src="../_imgs/logo-mark.png" alt="mich"></a>
+      <span id="headerSubTitle">not mach</span>
+    </h1>
+  </div>
+</header>
+
+<nav id="side-bar">
+  <div class="sideBarGroup">
+    <p class="sideBarTitle">pages:</p>
+    <ul>
+      <li><a href="../index.html">&rsaquo; mich</a></li>
+      <li><a href="../architecture/index.html">&rsaquo; architecture/</a></li>
+      <li><a href="../docs/index.html" class="thisPage">&rsaquo; docs/</a></li>
+      <li><a href="../releases/index.html">&rsaquo; releases/</a></li>
+      <li><a href="../gallery/index.html">&rsaquo; gallery/</a></li>
+    </ul>
+  </div>
+
+  <div class="sideBarGroup">
+    <p class="sideBarTitle">source:</p>
+    <ul>
+      <li><a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">- mich-core</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">- mich-userkit</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-core/blob/main/docs/syscalls.md" target="_blank" rel="noopener">- syscalls.md</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-core/releases/tag/v0.2.0" target="_blank" rel="noopener">- v0.2.0</a></li>
+    </ul>
+  </div>
+
+  <div class="sideBarMeta">
+    arch: x86-64 (UEFI)<br>
+    planned: aarch64, riscv64<br>
+    license: BSD 2-Clause<br>
+    latest: v0.2.0
+  </div>
+</nav>
+
+<article>
+
+<h1>docs</h1>
+
+<h2 id="build">build and run</h2>
+<p>
+  You need a Linux host with GNU Make, GCC, binutils, NASM, Python 3, <code>qemu-system-x86</code>, OVMF UEFI firmware, and coreutils. The build does not fetch anything from the network.
+</p>
+<pre><code>sudo apt update
+sudo apt install build-essential gcc-multilib binutils nasm python3 qemu-system-x86 ovmf coreutils
+
+git clone --recurse-submodules https://github.com/ukdaemonz/mich-core.git
+cd mich-core
+make -j2
+make run64</code></pre>
+
+<p>
+  If you cloned without <code>--recurse-submodules</code>, run <code>git submodule update --init</code> so <code>src/user64</code> (<a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">mich-userkit</a>) is populated. Serial console output goes to stdio.
+</p>
+
+<h3>test targets</h3>
+<pre><code>make test64
+make test64-highmem
+make test64-hardware
+make test64-msi
+make test64-pcie
+make test64-iommu
+make test64-amd-iommu
+make test64-panic
+make release-check</code></pre>
+
+<h2 id="syscalls">system calls (x86-64)</h2>
+<p>
+  Mich enters the kernel through the x86-64 <code>syscall</code> instruction. The full list is tracked in <a href="https://github.com/ukdaemonz/mich-core/blob/main/docs/syscalls.md" target="_blank" rel="noopener">docs/syscalls.md</a> and dispatched in <code>src/arch/x86_64/kernel/syscall_dispatch.c</code>.
+</p>
+<ul>
+  <li><code>RAX</code> holds the syscall number on entry and the return value on exit</li>
+  <li>arguments go in <code>RDI</code>, <code>RSI</code>, <code>RDX</code></li>
+  <li>calls fail closed: bad pointers, missing capabilities, or missing handle rights return an error before touching state</li>
+</ul>
+
+<div class="werc-table-wrap">
+  <table class="werc-table">
+    <thead>
+      <tr>
+        <th>Numbers</th>
+        <th>Group</th>
+        <th>Calls</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="num">1, 4</td>
+        <td>Console</td>
+        <td><code>write</code>, syscall/sysret self-test</td>
+      </tr>
+      <tr>
+        <td class="num">5..7, 24, 31</td>
+        <td>Port IPC</td>
+        <td><code>send</code>, <code>recv</code>, <code>send_nb</code>, <code>recv_from</code>, <code>send_timeout</code></td>
+      </tr>
+      <tr>
+        <td class="num">11..17, 23, 32, 216</td>
+        <td>Tasks</td>
+        <td><code>fork</code>, <code>exec</code>, <code>exit</code>, <code>wait</code>, <code>getpid</code>, <code>kill</code>, <code>yield</code>, <code>spawn</code>, <code>task_resume</code></td>
+      </tr>
+      <tr>
+        <td class="num">18..22</td>
+        <td>Capabilities</td>
+        <td><code>service_register</code>, <code>service_lookup</code>, <code>cap_get</code>, <code>cap_drop</code>, <code>cap_grant</code></td>
+      </tr>
+      <tr>
+        <td class="num">33, 38, 59</td>
+        <td>Handles</td>
+        <td><code>handle_close</code>, <code>handle_duplicate</code>, <code>handle_transfer_batch</code></td>
+      </tr>
+      <tr>
+        <td class="num">34..37, 58, 81, 85, 86</td>
+        <td>Events</td>
+        <td><code>event_create</code>, <code>event_wait</code>, <code>completion_wait</code>, <code>timer_wait</code>, <code>wait_many</code></td>
+      </tr>
+      <tr>
+        <td class="num">39..41</td>
+        <td>Driver Bridge</td>
+        <td><code>bridge_create</code>, <code>bridge_wait</code>, <code>bridge_read</code></td>
+      </tr>
+      <tr>
+        <td class="num">155..166</td>
+        <td>Native VFS</td>
+        <td><code>root</code>, <code>create</code>, <code>lookup</code>, <code>open</code>, <code>read</code>, <code>write</code>, <code>truncate</code>, <code>stat</code>, <code>unlink</code>, <code>resolve_path</code></td>
+      </tr>
+      <tr>
+        <td class="num">186..209, 217..261</td>
+        <td>POSIX profile</td>
+        <td><code>open</code>, <code>close</code>, <code>pread</code>, <code>pwrite</code>, <code>getdents</code>, <code>mkdir</code>, <code>unlink</code>, <code>poll</code>, <code>select</code>, <code>socket</code>, <code>pledge</code>, <code>unveil</code>, <code>tcsetpgrp</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="layout">source tree</h2>
+<pre><code>src/core/        types, boot info, serial console, physical page allocator
+src/process/     tasks, scheduler, fork/exec, IPC, capabilities, POSIX layer
+src/user64/      mich-userkit submodule (init, libc, POSIX headers, drivers)
+src/objects/     kernel objects, handles, resources, events, rings, IOMMU
+src/driver/      driver domains, supervisor, manifest binding, virtio ABI
+src/net/         ARP, Ethernet, IPv4/IPv6, ICMP/NDP, UDP/UDPv6, TCP, sockets
+src/fs/          VFS, bootfs firmware loader, persistent adytumfs v3
+src/arch/x86_64/ UEFI entry, SMP, APIC/MSI-X, Intel VT-d, AMD-Vi</code></pre>
+
+<h2 id="crypto">crypto policy</h2>
+<p>
+  The kernel only keeps crypto primitives that cannot live in userspace:
+</p>
+<ul>
+  <li>ChaCha20 DRBG for kernel entropy and <code>getrandom</code></li>
+  <li>SipHash-2-4 keyed at boot for TCP Initial Sequence Numbers</li>
+  <li>CRC32C for <code>adytumfs</code> superblock and block checksums</li>
+</ul>
+<p>
+  No TLS, no X.509, and no public-key code in ring 0. Link your TLS library in userspace.
+</p>
+
+</article>
+
+<div id="lightbox">
+  <img id="lightbox-img" src="" alt="preview">
+  <div id="lightbox-caption"></div>
+</div>
+
+<footer>
+  <div class="left">
+    <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">ukdaemonz/mich-core</a> &middot; BSD 2-Clause
+  </div>
+  <div class="right">
+    Powered by <a href="http://werc.cat-v.org/" target="_blank" rel="noopener">werc</a>
+  </div>
+</footer>
+
+<script src="../cursor.js"></script>
+</body>
+</html>

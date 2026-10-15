@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mich / architecture</title>
+  <link rel="shortcut icon" href="../favicon.png" type="image/png">
+  <link rel="stylesheet" href="../style.css" type="text/css" media="screen, handheld">
+</head>
+<body>
+<div id="tos-cursor" aria-hidden="true">
+  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <g fill="#ffffff">
+      <rect x="0" y="0" width="1" height="1"/>
+      <rect x="0" y="1" width="2" height="1"/>
+      <rect x="0" y="2" width="3" height="1"/>
+      <rect x="0" y="3" width="4" height="1"/>
+      <rect x="0" y="4" width="5" height="1"/>
+      <rect x="0" y="5" width="6" height="1"/>
+      <rect x="0" y="6" width="7" height="1"/>
+      <rect x="0" y="7" width="8" height="1"/>
+      <rect x="0" y="8" width="9" height="1"/>
+      <rect x="0" y="9" width="10" height="1"/>
+      <rect x="0" y="10" width="6" height="1"/>
+      <rect x="0" y="11" width="3" height="1"/>
+      <rect x="4" y="11" width="2" height="1"/>
+      <rect x="0" y="12" width="2" height="1"/>
+      <rect x="5" y="12" width="2" height="1"/>
+      <rect x="0" y="13" width="1" height="1"/>
+      <rect x="5" y="13" width="2" height="1"/>
+      <rect x="6" y="14" width="2" height="1"/>
+      <rect x="6" y="15" width="2" height="1"/>
+    </g>
+  </svg>
+</div>
+
+<header>
+  <nav class="superHeader">
+    <div class="left">
+      <a href="../index.html">mich</a> |
+      <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">code</a> |
+      <a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">userkit</a> |
+      <a href="../docs/index.html#syscalls">syscalls</a> |
+      <a href="../releases/index.html">releases</a> |
+      <a href="https://github.com/ukdaemonz/mich-core/issues" target="_blank" rel="noopener">bugs</a>
+    </div>
+    <div class="right">
+      <button type="button" class="mode-btn" id="invert-bg-btn">[invert]</button>
+    </div>
+  </nav>
+
+  <div class="midHeader">
+    <h1 class="headerTitle">
+      <a class="brand-link" href="../index.html"><img class="brand-m-img" src="../_imgs/logo-mark.png" alt="mich"></a>
+      <span id="headerSubTitle">not mach</span>
+    </h1>
+  </div>
+</header>
+
+<nav id="side-bar">
+  <div class="sideBarGroup">
+    <p class="sideBarTitle">pages:</p>
+    <ul>
+      <li><a href="../index.html">&rsaquo; mich</a></li>
+      <li><a href="../architecture/index.html" class="thisPage">&rsaquo; architecture/</a></li>
+      <li><a href="../docs/index.html">&rsaquo; docs/</a></li>
+      <li><a href="../releases/index.html">&rsaquo; releases/</a></li>
+      <li><a href="../gallery/index.html">&rsaquo; gallery/</a></li>
+    </ul>
+  </div>
+
+  <div class="sideBarGroup">
+    <p class="sideBarTitle">source:</p>
+    <ul>
+      <li><a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">- mich-core</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-userkit" target="_blank" rel="noopener">- mich-userkit</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-core/blob/main/docs/syscalls.md" target="_blank" rel="noopener">- syscalls.md</a></li>
+      <li><a href="https://github.com/ukdaemonz/mich-core/releases/tag/v0.2.0" target="_blank" rel="noopener">- v0.2.0</a></li>
+    </ul>
+  </div>
+
+  <div class="sideBarMeta">
+    arch: x86-64 (UEFI)<br>
+    planned: aarch64, riscv64<br>
+    license: BSD 2-Clause<br>
+    latest: v0.2.0
+  </div>
+</nav>
+
+<article>
+
+<h1>architecture</h1>
+
+<p>
+  Mich keeps task scheduling, memory ownership, IPC, capabilities, and hardware resource tracking in a small kernel core. Drivers run in isolated Ring 3 domains when isolation matters more than saving a context switch.
+</p>
+
+<blockquote>
+  mich, not mach: capability-checked kernel handles and shared descriptor rings instead of copying every packet through microkernel IPC ports.
+</blockquote>
+
+<h2 id="handles">handles and objects</h2>
+<p>
+  Hardware and kernel resources are exposed as typed objects (<code>KOBJECT_*</code>). Userspace never sees kernel pointers. Each process has a 32-slot handle table indexed by a 32-bit value:
+</p>
+<pre><code>8-bit slot | 24-bit generation</code></pre>
+<p>
+  Every handle carries explicit rights bits (<code>KRIGHT_READ</code>, <code>KRIGHT_WRITE</code>, <code>KRIGHT_MAP</code>, control, wait, signal, transfer). A 40,000-cycle test stresses slot reuse to make sure old handles stay dead after close.
+</p>
+
+<h2 id="drivers">userspace driver supervisor</h2>
+<p>
+  The supervisor binds PCI devices to userspace capsules (like <code>src/user64/virtio_net</code>) using manifests and dependency checks.
+</p>
+<p>
+  When a driver stops or crashes, the supervisor sends a request to its <code>Driver Bridge</code> endpoint and gives it 32 ticks in <code>STOPPING</code> state to drain work and call <code>stop-ack</code>. Whether the driver answers or times out, teardown runs in a fixed order: mask IRQs and MSI-X vectors, clear PCI bus master, unmap MMIO and DMA pages, revoke handles, and run PCI Function Level Reset. If teardown fails, the device is quarantined and cannot be bound again.
+</p>
+
+<h2 id="iommu">iommu (intel vt-d and amd-vi)</h2>
+<p>
+  DMA isolation lives in <code>src/objects/iommu.c</code> with backends for Intel VT-d (ACPI DMAR, root/context tables, second-level page tables, IOTLB flushes) and AMD-Vi (ACPI IVRS, device table entries, command ring, event log). When VT-d is present, coherent DMA buffers get bounded 16 MiB IOVA windows. Crash teardown strips those page-table entries before the driver process is reaped.
+</p>
+
+<h2 id="vfs">vfs, adytumfs v3, and the posix profile</h2>
+<p>
+  The VFS stays in kernel space and uses the same object model (<code>KOBJECT_VNODE</code>, <code>KOBJECT_DIRECTORY</code>, <code>KOBJECT_FILE</code>, <code>KOBJECT_MOUNT</code>):
+</p>
+<ul>
+  <li><code>ramfs</code> holds the root directory; boot modules mount read-only under <code>/boot</code> via <code>bootfs</code></li>
+  <li><code>adytumfs v3</code> stores persistent trees, modes, and file data on block devices with CRC32C checksums</li>
+  <li>the static POSIX profile gives x86-64 ELF binaries standard calls (<code>open</code>, <code>read</code>, <code>write</code>, <code>fork</code>, <code>execve</code>, <code>waitpid</code>, <code>poll</code>, <code>select</code>, sockets, <code>pledge</code>, <code>unveil</code>, job control) without handing out <code>CAP_VFS_ADMIN</code> or raw hardware handles</li>
+</ul>
+
+<h2 id="net">network stack and netbench</h2>
+<p>
+  Packets live in preallocated page pools. Each buffer ID carries a generation counter and one owner state at a time:
+</p>
+<pre><code>FREE -&gt; RX -&gt; STACK -&gt; TX -&gt; TX_QUEUED -&gt; DRIVER_RX / DRIVER_TX</code></pre>
+<p>
+  The hot path never allocates pages or kernel objects. Below are single-CPU KVM <code>rdtsc</code> min cycle counts per packet on an Intel Core i3-7100U at 2.40GHz (512 warmup packets, 4096 sampled packets on <code>vnic</code>):
+</p>
+
+<div class="werc-table-wrap">
+  <table class="werc-table">
+    <thead>
+      <tr>
+        <th>Direction</th>
+        <th class="num">64 B</th>
+        <th class="num">512 B</th>
+        <th class="num">1500 B</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>RX</td>
+        <td class="num">224</td>
+        <td class="num">254</td>
+        <td class="num">328</td>
+      </tr>
+      <tr>
+        <td>TX</td>
+        <td class="num">296</td>
+        <td class="num">758</td>
+        <td class="num">1746</td>
+      </tr>
+      <tr>
+        <td>Echo</td>
+        <td class="num">460</td>
+        <td class="num">958</td>
+        <td class="num">2024</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="matrix">support matrix</h2>
+<div class="werc-table-wrap">
+  <table class="werc-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>x86-64</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>UEFI boot through BigDevBoot</td><td>Yes</td></tr>
+      <tr><td>Ring 3 ELF64 processes, COW <code>fork</code>, <code>exec</code>, <code>wait</code></td><td>Yes</td></tr>
+      <tr><td>Port IPC, capabilities, and service registry</td><td>Yes</td></tr>
+      <tr><td>Kernel objects, 24-bit handle generations, rings, completions, <code>wait_many</code></td><td>Yes</td></tr>
+      <tr><td>ACPI, PCI, PCIe ECAM, Local APIC, I/O APIC, MSI, MSI-X</td><td>Yes</td></tr>
+      <tr><td>Userspace driver supervisor, graceful stop, reset policy, quarantine</td><td>Yes</td></tr>
+      <tr><td>Intel VT-d and AMD-Vi IOMMU translation and fault quarantine</td><td>Yes</td></tr>
+      <tr><td>VFS (<code>ramfs</code>, <code>bootfs</code> firmware loader, persistent <code>adytumfs v3</code>)</td><td>Yes</td></tr>
+      <tr><td>Static POSIX profile (<code>pledge</code>, <code>unveil</code>, job control, sockets)</td><td>Yes</td></tr>
+      <tr><td>Userspace <code>virtio-net</code>, DHCPv4, IPv4/IPv6, SLAAC, UDP/UDPv6, TCP</td><td>Yes</td></tr>
+      <tr><td>SMP (AP bring-up, per-CPU state, IPIs, spinlocks)</td><td>Yes</td></tr>
+      <tr><td>AArch64 and RISC-V 64</td><td>Planned</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</article>
+
+<div id="lightbox">
+  <img id="lightbox-img" src="" alt="preview">
+  <div id="lightbox-caption"></div>
+</div>
+
+<footer>
+  <div class="left">
+    <a href="https://github.com/ukdaemonz/mich-core" target="_blank" rel="noopener">ukdaemonz/mich-core</a> &middot; BSD 2-Clause
+  </div>
+  <div class="right">
+    Powered by <a href="http://werc.cat-v.org/" target="_blank" rel="noopener">werc</a>
+  </div>
+</footer>
+
+<script src="../cursor.js"></script>
+</body>
+</html>
