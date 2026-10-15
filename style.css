@@ -430,8 +430,8 @@ table.werc-table th.num {
   display: block;
   background: #000000 !important;
   text-align: center;
-  margin-bottom: 0.55rem;
-  border: 1px solid #2a2a2a;
+  margin-bottom: 0;
+  border: none;
 }
 
 .gallery-item img {
@@ -518,4 +518,31 @@ footer a:hover {
   article {
     padding: 0.8rem 0.9rem 2rem 0.9rem;
   }
+}
+
+.discord-icon-row {
+  margin-top: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.discord-icon-row a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: none !important;
+  padding: 2px;
+  transition: transform 0.12s ease;
+}
+
+.discord-icon-row a:hover {
+  background: none !important;
+  transform: scale(1.08);
+}
+
+.discord-icon-row img {
+  width: 36px;
+  height: 36px;
+  display: block;
 }
